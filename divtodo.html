@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Responsive To-Do App</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <style>
+    :root {
+      --bg-light: #f4f4f4;
+      --bg-dark: #1e1e2f;
+      --container-light: #ffffff;
+      --container-dark: #2e2e3e;
+      --text-light: #333;
+      --text-dark: #f4f4f4;
+      --accent: #7e57c2;
+    }
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Segoe UI', sans-serif;
+  background: linear-gradient(to bottom right, #e0f7fa, #fce4ec); /* Light mode background */
+  color: var(--text-light);
+  transition: background 0.3s, color 0.3s;
+}
+
+body.dark {
+  background: var(--bg-dark); /* Dark mode background */
+  color: var(--text-dark);
+}
+
+.container {
+  max-width: 500px;
+  margin: 50px auto;
+  padding: 20px;
+  background: var(--container-light);
+  border-radius: 15px;
+  box-shadow: 0 0 15px rgba(0,0,0,0.1);
+  transition: background 0.3s;
+}
+
+body.dark .container {
+  background: var(--container-dark);
+}
+
+
+   
+   
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .theme-toggle {
+      cursor: pointer;
+      font-size: 20px;
+    }
+
+    h2 {
+      margin: 10px 0;
+    }
+
+    input, button {
+      padding: 10px;
+      margin: 5px 0;
+      width: 100%;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      font-size: 16px;
+    }
+
+    .task {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 10px;
+      border-bottom: 1px solid #ccc;
+      font-size: 16px;
+    }
+
+    .task.completed span {
+      text-decoration: line-through;
+      color: gray;
+    }
+
+    .task-buttons {
+      display: flex;
+      gap: 10px;
+    }
+
+    .task-buttons i {
+      cursor: pointer;
+    }
+
+    @media (max-width: 600px) {
+      .container {
+        margin: 20px;
+        padding: 15px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h2><i class="fas fa-list-check"></i> To-Do App</h2>
+      <div class="theme-toggle" onclick="toggleTheme()">
+        <i id="theme-icon" class="fas fa-moon"></i>
+      </div>
+    </div>
+    <input type="text" id="task-input" placeholder="Enter a task" />
+    <input type="datetime-local" id="task-date" />
+    <button onclick="addTask()">Add Task</button>
+    <div id="task-list"></div>
+  </div>
+
+  <script>
+    let isDark = false;
+    const taskList = document.getElementById('task-list');
+
+    function toggleTheme() {
+      document.body.classList.toggle("dark");
+      isDark = !isDark;
+      document.getElementById('theme-icon').className = isDark ? 'fas fa-sun' : 'fas fa-moon';
+    }
+
+    function addTask() {
+      const taskInput = document.getElementById('task-input');
+      const taskDate = document.getElementById('task-date');
+      const taskText = taskInput.value.trim();
+      const dateValue = taskDate.value;
+
+      if (taskText === '') return alert("Please enter a task");
+
+      const task = document.createElement('div');
+      task.className = 'task';
+
+      const taskContent = document.createElement('span');
+      taskContent.innerHTML = `${taskText} <small>${dateValue ? '(' + dateValue + ')' : ''}</small>`;
+
+      const buttons = document.createElement('div');
+      buttons.className = 'task-buttons';
+
+      const completeBtn = document.createElement('i');
+      completeBtn.className = 'fas fa-check-circle';
+      completeBtn.onclick = () => {
+        task.classList.toggle('completed');
+      };
+
+      const editBtn = document.createElement('i');
+      editBtn.className = 'fas fa-edit';
+      editBtn.onclick = () => {
+        const newTask = prompt("Edit Task:", taskText);
+        if (newTask) {
+          taskContent.innerHTML = `${newTask} <small>${dateValue ? '(' + dateValue + ')' : ''}</small>`;
+        }
+      };
+
+      const deleteBtn = document.createElement('i');
+      deleteBtn.className = 'fas fa-trash';
+      deleteBtn.onclick = () => {
+        task.remove();
+      };
+
+      buttons.append(completeBtn, editBtn, deleteBtn);
+      task.append(taskContent, buttons);
+      taskList.appendChild(task);
+
+      taskInput.value = '';
+      taskDate.value = '';
+    }
+  </script>
+</body>
+</html>
